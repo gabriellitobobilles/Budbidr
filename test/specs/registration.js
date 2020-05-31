@@ -19,7 +19,7 @@ describe('Weekly Report', function () {
 
     });
 
-    xit('BudbiDr OrderNow', function (done) {
+    it('BudbiDr OrderNow', function (done) {
         this.timeout(300000); // 5 minutes
 
         RocksPage.BudbiDrOrderNow(access.TestUserCredential.user, access.TestUserCredential.pass)
@@ -30,6 +30,20 @@ describe('Weekly Report', function () {
         this.timeout(300000); // 5 minutes
 
         RocksPage.BudbiDrShipOrder()
+
+    });
+
+    it('BudbiDr Received and Pay', function (done) {
+        this.timeout(300000); // 5 minutes
+
+        RocksPage.BudbiDrReceivedOrder(access.TestUserCredential.user, access.TestUserCredential.pass)
+
+    });
+
+    it('BudbiDr Confirmed Payment(Seller)', function (done) {
+        this.timeout(300000); // 5 minutes
+
+        RocksPage.BudbiDrConfirmedPayment()
 
     });
 

@@ -46,10 +46,25 @@ var LoginPage = Object.create(Page, {
     OpenOrder: { get: function () { return browser.$(`*[id="Open"]`); } },
     ViewIcon: { get: function () { return browser.$(`*[class="fa fa-eye icon-action"]`); } },
     shipAnOrder: { get: function () { return browser.$(`*[class="btn btn btn-shipanorder btn-primary"]`); } },
-    
-    
-    
-    
+    shipAnOrderModalConfirm: { get: function () { return browser.$('[class="form-check-label"]'); } },
+    shipAnOrdernote: { get: function () { return browser.$(`*[id="shipAnOrder.note"]`); } },
+    dateShipOrder: { get: function () { return browser.$(`*[class="el-input__inner"]`); } },
+    confirmShippedbtn: { get: function () { return browser.$(`*[class="btn btn-danger"]`); } },
+    navlinkuser: { get: function () { return browser.$(`*[class="nav-link dropdown-toggle bbd-nav-link-user"]`); } },
+    userLogout: { get: function () { return browser.$('.dropdown-item=Log Out'); } },
+    orderStatus: { get: function () { return browser.$$(`*[class="p-badge detail-header-item-status badge-success badge-pill"]`)[1]; } },
+    ShippedOrder: { get: function () { return browser.$(`*[id="Shipped"]`); } },
+    ReceivedOrder: { get: function () { return browser.$(`*[class="btn btn btn-receiptanorder btn-primary"]`); } },
+    ConfirmReceipt: { get: function () { return browser.$('button=Confirm Receipt'); } },
+    message: { get: function () { return browser.$(`*[data-notify="message"]`); } },
+    ReceivedNotes: { get: function () { return browser.$(`*[id="receiptAnOrder.note"]`); } },
+    payOrder: { get: function () { return browser.$(`*[id="Received"]`); } },
+    paidOrder: { get: function () { return browser.$(`*[class="btn btn btn-paidanorder btn-primary"]`); } },
+    paidNotes: { get: function () { return browser.$(`*[id="paidAnOrder.note"]`); } },
+    ConfirmPaymentbtn: { get: function () { return browser.$('button=Confirm Payment'); } },
+    OrderPaid: { get: function () { return browser.$(`*[id="Paid"]`); } },
+    confirmpaidanorderBtn: { get: function () { return browser.$(`*[class="btn btn btn-confirmpaidanorder btn-primary"]`); } },
+    confirmPaidAnOrderNotes: { get: function () { return browser.$(`*[id="confirmPaidAnOrder.note"]`); } },
     
     
     /**
@@ -121,7 +136,7 @@ var LoginPage = Object.create(Page, {
         browser.pause(5000)
     }},
 
-    BudbiDrOrderNow: { value: function(user , pass ){
+    BudbiDrOrderNow: { value: function(user , pass){
 
         Page.open.call(this, '/Account/Login?returnUrl=%2FProduct%2FIndex');
         this.Username.waitForDisplayed({ timeout: 270000 });
@@ -151,7 +166,9 @@ var LoginPage = Object.create(Page, {
         this.orderOKbtn.waitForDisplayed({ timeout: 270000 });
         assert.strictEqual(this.sucessOrderTitle.getText(), "successfully");
         assert.strictEqual(this.sucessOrderContent.getText(), "Your order have been updated success");
-        browser.pause(5000)
+        assert.strictEqual(this.message.getText(), "Your order have been updated success");
+        this.orderOKbtn.click()
+        this._appBidrdLogout()
 
     }},
 
@@ -164,22 +181,141 @@ var LoginPage = Object.create(Page, {
         this.UserPassword.click()
         this.UserPassword.setValue(access.SellerCredential.pass)
         this.registerbtn.click();
-        this.userDropDown.waitForDisplayed({ timeout: 270000 });
-        this.userDropDown.click()
-        browser.pause(1000)
-        this.userDashBoard.click()
-        var allGUID = browser.getWindowHandles();
-        browser.switchToWindow(allGUID[1]);
-        browser.pause(1000)
+        this._goDashBoard()
         this.OrderAppMenu.click()
         this.OpenOrder.waitForDisplayed({ timeout: 270000 });
         this.OpenOrder.click()
         this.ViewIcon.click();
         this.shipAnOrder.waitForDisplayed({ timeout: 270000 });
         this.shipAnOrder.click()
-        browser.pause(500000)
+        this._appBidrdOrderModalDateAndConfirmed()
+        this.shipAnOrdernote.click()
+        this.shipAnOrdernote.setValue(`Test shipped only`)
+        browser.pause(1000)
+        this.confirmShippedbtn.click()
+        browser.pause(1000)
+        assert.strictEqual(this.message.getText(), "The order have been updated success");
+        assert.strictEqual(this.shipAnOrder.isExisting(), false);
+        this._appBidrdLogout()
+
 
     }},
+
+    BudbiDrReceivedOrder: { value: function(user , pass){
+
+        Page.open.call(this, '/Account/Login?returnUrl=%2FProduct%2FIndex');
+        this.Username.waitForDisplayed({ timeout: 270000 });
+        this.Username.click()
+        this.Username.setValue(user)
+        this.UserPassword.click()
+        this.UserPassword.setValue(pass)
+        this.registerbtn.click();
+        this._goDashBoard()
+        this.OrderAppMenu.click()
+        this.ShippedOrder.waitForDisplayed({ timeout: 270000 });
+        this.ShippedOrder.click()
+        this.ViewIcon.click();        
+        this.ReceivedOrder.waitForDisplayed({ timeout: 270000 });
+        this.ReceivedOrder.click()
+        this._appBidrdOrderModalDateAndConfirmed()
+        this.ReceivedNotes.click();
+        this.ReceivedNotes.setValue(`Receipt order`);
+        this.ConfirmReceipt.click()
+        browser.pause(1000)
+        assert.strictEqual(this.message.getText(), "The order have been updated success");
+        assert.strictEqual(this.ReceivedOrder.isExisting(), false);
+        this._payAnOrder()
+        this._appBidrdLogout()
+
+
+
+
+    }},
+
+    BudbiDrConfirmedPayment: { value: function(){
+
+        Page.open.call(this, '/Account/Login?returnUrl=%2FProduct%2FIndex');
+        this.Username.waitForDisplayed({ timeout: 270000 });
+        this.Username.click()
+        this.Username.setValue(access.SellerCredential.user)
+        this.UserPassword.click()
+        this.UserPassword.setValue(access.SellerCredential.pass)
+        this.registerbtn.click();
+        this._goDashBoard()
+        this.OrderAppMenu.click()
+        this.OrderPaid.waitForDisplayed({ timeout: 270000 });
+        this.OrderPaid.click()
+        this.ViewIcon.click();
+        this.confirmpaidanorderBtn.waitForDisplayed({ timeout: 270000 });
+        this.confirmpaidanorderBtn.click()
+        this._appBidrdOrderModalDateAndConfirmed()
+        this.confirmPaidAnOrderNotes.click()
+        this.confirmPaidAnOrderNotes.setValue(`Confirmed payment, I received the payment..thanks`)
+        browser.pause(1000)
+        this.ConfirmPaymentbtn.click()
+        browser.pause(1000)
+        assert.strictEqual(this.message.getText(), "The order have been updated success");
+        assert.strictEqual(this.shipAnOrder.isExisting(), false);
+        this._appBidrdLogout()
+
+
+    }},
+
+    _goDashBoard: { value: function(){
+
+
+        this.userDropDown.waitForDisplayed({ timeout: 270000 });
+        this.userDropDown.click()
+        browser.pause(1000)
+        this.userDashBoard.click()
+        var allGUID = browser.getWindowHandles();
+        browser.switchToWindow(allGUID[allGUID.length-1]);
+        browser.pause(1000)
+        this.OrderAppMenu.waitForDisplayed({ timeout: 270000 });
+
+
+    }},
+
+    _appBidrdLogout: { value: function(){
+
+
+        browser.pause(6000)
+        this.navlinkuser.click()
+        this.userLogout.click()
+        browser.pause(3000)
+
+
+    }},
+
+    _appBidrdOrderModalDateAndConfirmed: { value: function(){
+
+
+        this.dateShipOrder.waitForDisplayed({ timeout: 270000 });
+        this.dateShipOrder.setValue(Page.shipDate())
+        browser.keys("Enter")
+        browser.pause(1000)
+        this.shipAnOrderModalConfirm.click()
+        browser.pause(1000)
+
+
+    }},
+
+    _payAnOrder: { value: function(){
+
+
+        this.OrderAppMenu.click()
+        this.payOrder.waitForDisplayed({ timeout: 270000 });
+        this.payOrder.click()
+        this.ViewIcon.click();
+        this.paidOrder.click()
+        this._appBidrdOrderModalDateAndConfirmed()
+        this.paidNotes.click()
+        this.paidNotes.setValue(`Ordered paid`)
+        browser.pause(1000)
+        this.ConfirmPaymentbtn.click()
+
+    }},
+
 
 });
 

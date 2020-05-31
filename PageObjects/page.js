@@ -30,6 +30,16 @@ Page.prototype.dateRanage =  function(monthrange){
     return new Date(new Date().setMonth(new Date().getMonth() - monthrange)).toLocaleDateString()
 }
 
+Page.prototype.shipDate =  function(){
+
+    var d = new Date();
+    var month = d.getMonth()+2;
+    var day= d.getDate();
+    var year= d.getFullYear();
+    var dateShip = year+ '-'+month+'-'+day
+    return dateShip
+}
+
 function capFirst(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
