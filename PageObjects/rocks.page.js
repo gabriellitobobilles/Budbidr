@@ -34,7 +34,7 @@ var LoginPage = Object.create(Page, {
     OrderNowModal: { get: function () { return browser.$(`*[id="popup-make-order-now"]`); } },
     acceptCondition: { get: function () { return browser.$(`*[id="AcceptCondition"]`); } },
     orderQuantity: { get: function () { return browser.$(`*[id="tempQuantity"]`); } },
-    modalOrderNowBtn: { get: function () { return browser.$(`*[class="ok"]`); } },
+    modalOrderNowBtn: { get: function () { return browser.$(`*[class="submit-order"]`); } },
     userMobilePhonetxtfld: { get: function () { return browser.$(`*[name="Mobile Phone"]`); } },
     continuebtn: { get: function () { return browser.$(`*[class="btn btn-danger"]`); } },
     orderOKbtn: { get: function () { return browser.$(`*[class="swal2-confirm swal2-styled"]`); } },
@@ -160,8 +160,11 @@ var LoginPage = Object.create(Page, {
         this.orderQuantity.setValue()
         this.modalOrderNowBtn.click()
         this.userMobilePhonetxtfld.waitForDisplayed({ timeout: 270000 });
+        browser.pause(1000)
         this.userMobilePhonetxtfld.click()
+        browser.pause(1000)
         this.userMobilePhonetxtfld.setValue(`9934378327`)
+        browser.pause(1000)
         this.continuebtn.click()
         this.orderOKbtn.waitForDisplayed({ timeout: 270000 });
         assert.strictEqual(this.sucessOrderTitle.getText(), "successfully");
