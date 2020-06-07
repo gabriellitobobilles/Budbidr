@@ -22,7 +22,7 @@ describe('Weekly Report', function () {
     it('BudbiDr OrderNow', function (done) {
         this.timeout(300000); // 5 minutes
 
-        RocksPage.BudbiDrOrderNow(access.TestUserCredential.user, access.TestUserCredential.pass)
+        RocksPage.BudbiDrOrderNow(access.StagingUserCredential.user, access.StagingUserCredential.pass)
 
     });
 
@@ -36,7 +36,7 @@ describe('Weekly Report', function () {
     it('BudbiDr Received and Pay', function (done) {
         this.timeout(300000); // 5 minutes
 
-        RocksPage.BudbiDrReceivedOrder(access.TestUserCredential.user, access.TestUserCredential.pass)
+        RocksPage.BudbiDrReceivedOrder(access.StagingUserCredential.user, access.StagingUserCredential.pass)
 
     });
 
