@@ -284,6 +284,7 @@ var LoginPage = Object.create(Page, {
 
         browser.pause(6000)
         this.navlinkuser.click()
+        browser.pause(3000)
         this.userLogout.click()
         browser.pause(3000)
 
@@ -296,6 +297,8 @@ var LoginPage = Object.create(Page, {
         this.dateShipOrder.waitForDisplayed({ timeout: 270000 });
         this.dateShipOrder.setValue(Page.shipDate())
         browser.keys("Enter")
+        browser.pause(1000)
+        this.shipAnOrderModalConfirm.scrollIntoView();
         browser.pause(1000)
         this.shipAnOrderModalConfirm.click()
         browser.pause(1000)
